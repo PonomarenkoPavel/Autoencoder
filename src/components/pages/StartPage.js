@@ -13,8 +13,12 @@ export const StartPage = () => {
         </Typography>
       </div>
       <div className={styles.buttons}>
-        <Button variant="contained" color="primary" size="large">Создать новую нейронную сеть</Button>
-        <Button variant="contained" size="large" disabled>Загрузить готовую нейронную сеть</Button>
+        <Button variant="contained" color="primary" size="large">
+          Создать новую нейронную сеть
+        </Button>
+        <Button variant="contained" size="large" disabled>
+          Загрузить готовую нейронную сеть
+        </Button>
       </div>
     </div>
   );

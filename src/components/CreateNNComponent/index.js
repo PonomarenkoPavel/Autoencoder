@@ -1,6 +1,6 @@
 import React from 'react';
-import { 
-  Typography, 
+import {
+  Typography,
   TextField,
   Button,
   TableContainer,
@@ -33,9 +33,11 @@ export const CreateNNComponent = () => {
         Создать нейронную сеть
       </Typography>
       <form noValidate autoComplete="off" className={styles.form}>
-        <TextField label="Количество слоев" variant="outlined"/>
-        <TextField label="Количество входов" variant="outlined"/>
-        <Button variant="contained" color="primary" >Создать заготовленные слои</Button>
+        <TextField label="Количество слоев" variant="outlined" />
+        <TextField label="Количество входов" variant="outlined" />
+        <Button variant="contained" color="primary">
+          Создать заготовленные слои
+        </Button>
       </form>
       <TableContainer className={styles.table}>
         <Table aria-label="layers">
@@ -59,7 +61,9 @@ export const CreateNNComponent = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Button variant="contained" color="primary" >Создать нейронную сеть</Button>
+      <Button variant="contained" color="primary">
+        Создать нейронную сеть
+      </Button>
     </div>
   );
 };

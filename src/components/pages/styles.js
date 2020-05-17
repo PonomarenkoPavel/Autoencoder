@@ -8,7 +8,7 @@ export const useStyles = makeStyles({
     alignItems: 'center',
     height: '100vh',
     width: '100vw',
-    position: "absolute",
+    position: 'absolute',
   },
   description: {
     marginBottom: '40px',
@@ -18,5 +18,5 @@ export const useStyles = makeStyles({
     alignItems: 'center',
     width: '50%',
     justifyContent: 'space-around',
-  }
+  },
 });

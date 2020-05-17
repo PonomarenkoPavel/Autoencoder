@@ -1,8 +1,5 @@
 import React from 'react';
-import { 
-  Typography, 
-  Grid,
-} from '@material-ui/core';
+import { Typography, Grid } from '@material-ui/core';
 import { useStyles } from './styles';
 import { TrainNNComponent } from '../TrainNNConponent';
 import { TestNNComponent } from '../TestNNComponent';
@@ -23,4 +20,4 @@ export const NNComponent = () => {
       <TestNNComponent />
     </div>
   );
-}
+};
