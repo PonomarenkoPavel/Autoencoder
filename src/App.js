@@ -1,13 +1,14 @@
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
 import './App.css';
-import { StartPage } from './components/pages/StartPage';
-import { CreateNNComponent } from './components/CreateNNComponent';
-import { NNComponent } from './components/NNComponent';
+import { Routes } from './components/Routes';
 
 function App() {
   return (
     <div className="App">
-      <NNComponent />
+      <BrowserRouter>
+        <Routes />
+      </BrowserRouter>
     </div>
   );
 }

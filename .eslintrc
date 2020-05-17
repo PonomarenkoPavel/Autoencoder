@@ -57,7 +57,7 @@
     "require-yield": 0,
     "prettier/prettier": [
       "error",
-      { "singleQuote": true, "trailingComma": "es5", "arrowParens": "always" }
+      { "singleQuote": true, "trailingComma": "es5", "arrowParens": "always", "endOfLine":"auto" }
     ]
   },
   "settings": {
