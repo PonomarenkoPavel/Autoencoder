@@ -1,24 +1,44 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 export const useStyles = makeStyles({
-  container: {
+  wrapper: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    padding: '40px 80px',
+  },
+  container: {
+    paddingTop: '24px',
+    paddingBottom: '24px',
   },
   form: {
-    marginTop: '20px',
+    marginBottom: '20px',
     display: 'flex',
-    '& > *': {
-      marginRight: '15px',
-    },
-  },
-  layers: {
-    marginTop: '20px',
+    justifyContent: 'space-between',
   },
   table: {
-    maxWidth: 650,
-    marginTop: '20px',
+    marginBottom: '20px',
+    '& th': {
+      width: '40%',
+    },
+    '& th:first-child': {
+      width: '20%',
+    },
+  },
+  edit: {
+    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+  },
+  yellowTableRow: {
+    backgroundColor: '#fffcdd',
+    fontStyle: 'italic',
+  },
+  buttons: {
+    display: 'flex',
+    justifyContent: 'space-around',
+  },
+  padding: {
+    padding: '0 16px !important',
+  },
+  background: {
+    backgroundColor: '#fff',
   },
 });

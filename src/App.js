@@ -1,11 +1,13 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import './App.css';
+import { useStyles } from './styles';
 import { Routes } from './components/Routes';
 
 function App() {
+  const styles = useStyles();
+
   return (
-    <div className="App">
+    <div className={styles.wrapper}>
       <BrowserRouter>
         <Routes />
       </BrowserRouter>

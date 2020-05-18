@@ -1,19 +1,23 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Button, Typography } from '@material-ui/core';
 import { useStyles } from './styles';
 
-export const StartPage = () => {
+export const StartPageComponent = ({ createNN }) => {
   const styles = useStyles();
 
   return (
     <div className={styles.container}>
-      <div className={styles.description}>
-        <Typography variant="h3" component="h1">
-          Добро пожаловать
-        </Typography>
-      </div>
+      <Typography variant="h3" component="h1" paragraph>
+        Добро пожаловать
+      </Typography>
       <div className={styles.buttons}>
-        <Button variant="contained" color="primary" size="large">
+        <Button
+          variant="contained"
+          color="primary"
+          size="large"
+          onClick={createNN}
+        >
           Создать новую нейронную сеть
         </Button>
         <Button variant="contained" size="large" disabled>
@@ -22,4 +26,8 @@ export const StartPage = () => {
       </div>
     </div>
   );
+};
+
+StartPageComponent.propTypes = {
+  createNN: PropTypes.func.isRequired,
 };
