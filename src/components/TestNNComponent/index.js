@@ -2,7 +2,10 @@ import React from 'react';
 import { Container, Typography, Button, Grid } from '@material-ui/core';
 import { useStyles } from './styles';
 
-export const TestNNComponent = () => {
+export const TestNNComponent = ({
+  initImageContainer,
+  predsImageContainer,
+}) => {
   const styles = useStyles();
 
   return (
@@ -16,12 +19,12 @@ export const TestNNComponent = () => {
             Проверить
           </Button>
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={6} id="initImage" ref={initImageContainer}>
           <Typography component="h2" variant="h6" paragraph>
             Начальные изображения
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={6} id="predsImage" ref={predsImageContainer}>
           <Typography component="h2" variant="h6" paragraph>
             После НС
           </Typography>

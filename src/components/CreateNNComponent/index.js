@@ -55,7 +55,7 @@ const EditedRow = React.memo(
             size="small"
             fullWidth
             className={styles.background}
-            error={errors.units}
+            error={!!errors.units}
             helperText={errors.units}
           />
         </TableCell>
@@ -72,8 +72,8 @@ const EditedRow = React.memo(
             size="small"
             fullWidth
             className={styles.background}
-            error={errors.act}
-            helperText={errors.act}
+            // error={!!errors.act}
+            // helperText={errors.act}
           />
         </TableCell>
       </>

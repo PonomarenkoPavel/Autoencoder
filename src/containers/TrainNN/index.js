@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { NNComponent } from 'components/NNComponent';
 import { NUM_MNIST_DATASET_ELEMENTS } from 'constants/data';
@@ -9,16 +9,29 @@ import { selectDataStatus } from 'modules/data/selectors';
 import { STATUS_LOADING } from 'constants/status';
 import { Loader } from 'components/common/Loader';
 
+const defaultSampleSizes = {
+  train: 5500,
+  test: 1000,
+};
+
+const defaultLearningOptions = {
+  batchSize: 250,
+  epochs: 50,
+};
 /**
  * TODO
  * два раза делается запрос картинок. нужно поправить
  */
 export const TrainNN = () => {
-  const [sampleSizes, setSampleSizes] = useState({});
-  const [learningOptions, setLearningOptions] = useState({});
+  const [sampleSizes, setSampleSizes] = useState(defaultSampleSizes);
+  const [learningOptions, setLearningOptions] = useState(
+    defaultLearningOptions
+  );
   const layersOptions = useSelector(selectLayersOptions);
   const dispatch = useDispatch();
   const dataStatus = useSelector(selectDataStatus);
+  const initImageContainer = useRef(null);
+  const predsImageContainer = useRef(null);
   useEffect(() => {
     if (layersOptions.length) {
       const models = createAutoencoder(layersOptions);
@@ -53,6 +66,8 @@ export const TrainNN = () => {
         learningOptions={learningOptions}
         editLearningOption={editLearningOption}
         trainNN={trainNN}
+        initImageContainer={initImageContainer}
+        predsImageContainer={predsImageContainer}
       />
       {dataStatus === STATUS_LOADING && <Loader />}
     </>

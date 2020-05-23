@@ -1,4 +1,4 @@
-import { layers, input, model } from '@tensorflow/tfjs';
+import { layers, input, model, tidy, browser } from '@tensorflow/tfjs';
 import { show } from '@tensorflow/tfjs-vis';
 
 export const createEncoder = (layersOptions) => {
@@ -20,7 +20,7 @@ export const createEncoder = (layersOptions) => {
 
 export const createDecoder = (layersOptions) => {
   const lastIndex = layersOptions.length - 1;
-  const inputLayer = input({ shape: layersOptions[lastIndex].units });
+  const inputLayer = input({ shape: Number(layersOptions[lastIndex].units) });
   const stackOfLayers = createStackOfLayers(
     inputLayer,
     layersOptions,
@@ -49,13 +49,20 @@ export const createAutoencoder = (layersOptions) => {
     outputs: decoder.apply(encoder.apply(inputLayer)),
     name: 'autoencoder',
   });
+  console.log('encoder');
+  encoder.compile({ optimizer: 'adam', loss: 'binaryCrossentropy' });
+  encoder.summary();
+  console.log('decoder');
+  decoder.compile({ optimizer: 'adam', loss: 'binaryCrossentropy' });
+  decoder.summary();
+  console.log('autoencoder');
   autoencoder.compile({ optimizer: 'adam', loss: 'binaryCrossentropy' });
   autoencoder.summary();
   return { autoencoder, encoder, decoder };
 };
 
 export const createDenseLayer = ({ units, act }) =>
-  layers.dense({ units, activation: act });
+  layers.dense({ units: Number(units), activation: act });
 
 export const createStackOfLayers = (
   inputLayer,
@@ -90,3 +97,29 @@ export const trainModel = ({ nn, trainData, testData, epochs, batchSize }) => {
     // },
   });
 };
+
+export async function doPrediction(currentModel, data) {
+  const preds = currentModel.predict(data);
+  return preds;
+}
+
+export async function display(examples, container) {
+  // Количество изображений, которое нужно вывести на экран
+  const numExamples = examples.shape[0];
+  // Create a canvas element to render each example
+  for (let i = 0; i < numExamples; i += 1) {
+    const imageTensor = tidy(() =>
+      // Reshape the image to 28x28 px
+      examples.slice([i, 0], [1, examples.shape[1]]).reshape([28, 28, 1])
+    );
+    const canvas = document.createElement('canvas');
+    canvas.width = 28;
+    canvas.height = 28;
+    canvas.style = 'margin: 4px;';
+    // eslint-disable-next-line
+    await browser.toPixels(imageTensor.clipByValue(0, 1), canvas);
+    container.appendChild(canvas);
+
+    imageTensor.dispose();
+  }
+}

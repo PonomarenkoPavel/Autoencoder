@@ -16,7 +16,9 @@ export const NNComponent = ({ sampleSizes, learningOptions, ...props }) => (
           {...props}
         />
       </Grid>
+      <Grid item xs={7}>
+        <TestNNComponent {...props} />
+      </Grid>
     </Grid>
-    <TestNNComponent />
   </>
 );
