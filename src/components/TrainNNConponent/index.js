@@ -4,15 +4,20 @@ import {
   Typography,
   TextField,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Grid,
 } from '@material-ui/core';
 import { useStyles } from './styles';
 
-export const TrainNNComponent = () => {
+export const TrainNNComponent = ({
+  testSampleSize = '',
+  trainSampleSize = '',
+  dataSize = 0,
+  editSampleSize,
+  editLearningOption,
+  batchSize = '',
+  epochs = '',
+  trainNN,
+}) => {
   const styles = useStyles();
 
   return (
@@ -24,26 +29,6 @@ export const TrainNNComponent = () => {
               Настройка данных для обучения
             </Typography>
           </Grid>
-          <Grid item xs={12} md={7}>
-            <FormControl variant="outlined" fullWidth>
-              <InputLabel id="demo-simple-select-outlined-label">
-                Данные для обучения
-              </InputLabel>
-              <Select
-                labelId="demo-simple-select-outlined-label"
-                id="demo-simple-select-outlined"
-                label="Данные для обучения"
-              >
-                <MenuItem value="MNIST">NMIST</MenuItem>
-                <MenuItem disabled>Свои данные</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} md={5} container>
-            <Button variant="contained" color="primary" fullWidth>
-              Загрузить данные для обучения
-            </Button>
-          </Grid>
           <Grid item xs={12} sm={4} container>
             <Typography
               component="span"
@@ -51,13 +36,16 @@ export const TrainNNComponent = () => {
               color="textPrimary"
               className={styles.text}
             >
-              Всего доступно 123 элементов
+              Всего доступно {dataSize} элементов
             </Typography>
           </Grid>
           <Grid item xs={12} sm={4}>
             <TextField
               label="Размер тестовой выборки"
+              id="test"
               variant="outlined"
+              value={testSampleSize}
+              onChange={editSampleSize}
               fullWidth
             />
           </Grid>
@@ -65,6 +53,9 @@ export const TrainNNComponent = () => {
             <TextField
               label="Размер тренировочной выборки"
               variant="outlined"
+              id="train"
+              value={trainSampleSize}
+              onChange={editSampleSize}
               fullWidth
             />
           </Grid>
@@ -76,17 +67,32 @@ export const TrainNNComponent = () => {
         </Typography>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={4}>
-            <TextField label="Количество эпох" variant="outlined" fullWidth />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
             <TextField
-              label="Другой параметр(тоже важен)"
+              label="Количество эпох"
+              id="epochs"
+              onChange={editLearningOption}
+              value={epochs}
               variant="outlined"
               fullWidth
             />
           </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <TextField
+              label="Размер партии (batch)"
+              id="batchSize"
+              onChange={editLearningOption}
+              variant="outlined"
+              value={batchSize}
+              fullWidth
+            />
+          </Grid>
           <Grid item xs={12} sm={6} md={4} container>
-            <Button variant="contained" color="primary" fullWidth>
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              onClick={trainNN}
+            >
               Обучить нейронную сеть
             </Button>
           </Grid>

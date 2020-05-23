@@ -1,18 +1,45 @@
 import React, { useCallback, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { TRAIN_NN_URL, ROOT } from 'constants/api';
 import { CreateNNComponent } from 'components/CreateNNComponent';
 import { getEmptyLayerParameters } from 'helpers/layers';
+import { addLayersParameters } from 'modules/layers/actions';
+import { useValidate } from 'helpers/validations';
+import { validationRules } from './validationRules';
+
+const defaultLayersNumber = 3;
+const delaultLayers = {
+  1: {
+    units: 192,
+    act: 'relu',
+  },
+  2: {
+    units: 128,
+    act: 'relu',
+  },
+  3: {
+    units: 64,
+    act: 'linear',
+  },
+};
+
+// const validationRules = {};
 
 export const CreateNN = () => {
   const history = useHistory();
-  const [layersNumber, setLayersNumber] = useState('');
-  const [layers, setLayers] = useState({});
+  const dispatch = useDispatch();
+  const [layersNumber, setLayersNumber] = useState(defaultLayersNumber);
+  const [layers, setLayers] = useState(delaultLayers);
   const [currentLayer, setCurrentLayer] = useState(null);
+  const { errors, validateField, validateFields } = useValidate(
+    validationRules
+  );
 
   const goToTrain = useCallback(() => {
+    dispatch(addLayersParameters(layers));
     history.push(TRAIN_NN_URL);
-  }, [history]);
+  }, [history, dispatch, layers]);
 
   const goBack = useCallback(() => {
     history.push(ROOT);
@@ -49,7 +76,6 @@ export const CreateNN = () => {
     ({ target }) => {
       const field = target.name || target.id;
       const { value } = target;
-      console.log('vale', value, 'field', field, 'id', currentLayer);
       if (field && currentLayer) {
         setLayers((prevState) => ({
           ...prevState,
@@ -66,12 +92,18 @@ export const CreateNN = () => {
   const onBlur = useCallback(
     ({ relatedTarget, currentTarget }) => {
       const { tagName } = relatedTarget || {};
-      if (!currentTarget.contains(relatedTarget) && tagName !== 'LI') {
+      if (
+        !currentTarget.contains(relatedTarget) &&
+        tagName !== 'LI' &&
+        currentLayer &&
+        validateFields(layers[currentLayer])
+      ) {
         setCurrentLayer(null);
       }
     },
-    [setCurrentLayer]
+    [setCurrentLayer, validateFields, currentLayer, layers]
   );
+
   return (
     <CreateNNComponent
       goToTrain={goToTrain}
@@ -84,6 +116,8 @@ export const CreateNN = () => {
       editLayerParam={editLayerParam}
       onBlur={onBlur}
       editTableRow={editTableRow}
+      errors={errors}
+      validateField={validateField}
     />
   );
 };

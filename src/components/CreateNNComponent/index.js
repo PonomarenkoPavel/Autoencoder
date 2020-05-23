@@ -12,6 +12,7 @@ import {
   Container,
 } from '@material-ui/core';
 import { SelectComponent } from 'components/common/Select';
+import { HeaderComponent } from 'components/common/Header';
 import { useStyles } from './styles';
 
 const CommentRow = React.memo(({ colSpan, children }) => {
@@ -26,51 +27,59 @@ const CommentRow = React.memo(({ colSpan, children }) => {
   );
 });
 
-const EditedRow = React.memo(({ parameters, editLayerParam }) => {
-  const styles = useStyles();
-  const activationFunction = [
-    {
-      value: 'relu',
-      text: 'relu',
-    },
-    {
-      value: 'sigm',
-      text: 'sigm',
-    },
-  ];
+const EditedRow = React.memo(
+  ({ parameters, editLayerParam, validateField, errors }) => {
+    const styles = useStyles();
+    const activationFunction = [
+      {
+        value: 'relu',
+        text: 'relu',
+      },
+      {
+        value: 'linear',
+        text: 'linear',
+      },
+    ];
 
-  return (
-    <>
-      <TableCell padding="none" className={styles.padding}>
-        <TextField
-          label="Количество нейронов"
-          variant="outlined"
-          name="utils"
-          id="utils"
-          defaultValue={parameters.utils}
-          onBlur={editLayerParam}
-          size="small"
-          fullWidth
-          className={styles.background}
-        />
-      </TableCell>
-      <TableCell padding="none" className={styles.padding}>
-        <SelectComponent
-          label="Функция активации"
-          name="act"
-          id="act"
-          labelId="activation-function"
-          values={activationFunction}
-          defaultValue={parameters.act}
-          onBlur={editLayerParam}
-          size="small"
-          fullWidth
-          className={styles.background}
-        />
-      </TableCell>
-    </>
-  );
-});
+    return (
+      <>
+        <TableCell padding="none" className={styles.padding}>
+          <TextField
+            label="Количество нейронов"
+            variant="outlined"
+            name="units"
+            id="units"
+            value={parameters.units}
+            onChange={editLayerParam}
+            onBlur={validateField}
+            size="small"
+            fullWidth
+            className={styles.background}
+            error={errors.units}
+            helperText={errors.units}
+          />
+        </TableCell>
+        <TableCell padding="none" className={styles.padding}>
+          <SelectComponent
+            label="Функция активации"
+            name="act"
+            id="act"
+            labelId="activation-function"
+            values={activationFunction}
+            value={parameters.act}
+            onChange={editLayerParam}
+            onBlur={validateField}
+            size="small"
+            fullWidth
+            className={styles.background}
+            error={errors.act}
+            helperText={errors.act}
+          />
+        </TableCell>
+      </>
+    );
+  }
+);
 
 const SimpleTableRow = React.memo(
   ({
@@ -80,6 +89,8 @@ const SimpleTableRow = React.memo(
     parameters,
     onBlur,
     editTableRow,
+    validateField,
+    errors,
   }) => {
     const styles = useStyles();
 
@@ -94,11 +105,16 @@ const SimpleTableRow = React.memo(
       >
         <TableCell scope="row">{layerId}</TableCell>
         {currentLayer === layerId ? (
-          <EditedRow parameters={parameters} editLayerParam={editLayerParam} />
+          <EditedRow
+            parameters={parameters}
+            editLayerParam={editLayerParam}
+            validateField={validateField}
+            errors={errors}
+          />
         ) : (
           <>
-            <TableCell data-id={layerId} data-field="utils">
-              {parameters.utils}
+            <TableCell data-id={layerId} data-field="units">
+              {parameters.units}
             </TableCell>
             <TableCell data-id={layerId} data-field="act">
               {parameters.act}
@@ -122,14 +138,14 @@ export const CreateNNComponent = React.memo(
     onBlur,
     goBack,
     editTableRow,
+    errors,
+    validateField,
   }) => {
     const styles = useStyles();
-
+    console.log('errors', errors);
     return (
       <div className={styles.wrapper}>
-        <Typography component="h1" variant="h4" paragraph>
-          Настройка слоев нейронной сети
-        </Typography>
+        <HeaderComponent text="Настройка слоев нейронной сети" />
         <Container maxWidth="md" className={styles.container}>
           <form noValidate autoComplete="off" className={styles.form}>
             <TextField
@@ -169,6 +185,8 @@ export const CreateNNComponent = React.memo(
                     editLayerParam={editLayerParam}
                     onBlur={onBlur}
                     editTableRow={editTableRow}
+                    validateField={validateField}
+                    errors={errors}
                   />
                 ))}
               </TableBody>
