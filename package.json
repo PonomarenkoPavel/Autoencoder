@@ -1,5 +1,5 @@
 {
-  "homepage": "https://ponomarenkopavel.github.io/Autoencoder/",
+  "homepage": "https://ponomarenkopavel.github.io/Autoencoder",
   "name": "autoencoder",
   "version": "0.1.0",
   "private": true,
@@ -38,7 +38,7 @@
     ]
   },
   "scripts": {
-    "predeploy": "yarn build",
+    "predeploy": "yarn run build",
     "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
