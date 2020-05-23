@@ -1,4 +1,5 @@
 {
+  "homepage": "http://PonomarenkoPavel.github.io/Autoencoder",
   "name": "autoencoder",
   "version": "0.1.0",
   "private": true,
@@ -12,6 +13,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "axios": "^0.19.2",
+    "gh-pages": "^2.2.0",
     "husky": "^4.2.5",
     "lint-staged": "^10.2.2",
     "prop-types": "^15.7.2",
@@ -36,6 +38,8 @@
     ]
   },
   "scripts": {
+    "predeploy": "yarn run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
