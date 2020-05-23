@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/Autoencoder/static/css/main.5ecd60fb.chunk.css",
+    "main.js": "/Autoencoder/static/js/main.4e1d3089.chunk.js",
+    "main.js.map": "/Autoencoder/static/js/main.4e1d3089.chunk.js.map",
+    "runtime-main.js": "/Autoencoder/static/js/runtime-main.7e061879.js",
+    "runtime-main.js.map": "/Autoencoder/static/js/runtime-main.7e061879.js.map",
+    "static/js/2.97d5bc8c.chunk.js": "/Autoencoder/static/js/2.97d5bc8c.chunk.js",
+    "static/js/2.97d5bc8c.chunk.js.map": "/Autoencoder/static/js/2.97d5bc8c.chunk.js.map",
+    "index.html": "/Autoencoder/index.html",
+    "precache-manifest.c7e4ee805c553e06e58aaaf753d38b9f.js": "/Autoencoder/precache-manifest.c7e4ee805c553e06e58aaaf753d38b9f.js",
+    "service-worker.js": "/Autoencoder/service-worker.js",
+    "static/css/main.5ecd60fb.chunk.css.map": "/Autoencoder/static/css/main.5ecd60fb.chunk.css.map",
+    "static/js/2.97d5bc8c.chunk.js.LICENSE.txt": "/Autoencoder/static/js/2.97d5bc8c.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.7e061879.js",
+    "static/js/2.97d5bc8c.chunk.js",
+    "static/css/main.5ecd60fb.chunk.css",
+    "static/js/main.4e1d3089.chunk.js"
+  ]
+}
