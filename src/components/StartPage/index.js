@@ -5,7 +5,6 @@ import { useStyles } from './styles';
 
 export const StartPageComponent = ({ createNN }) => {
   const styles = useStyles();
-
   return (
     <div className={styles.container}>
       <Typography variant="h3" component="h1" paragraph>

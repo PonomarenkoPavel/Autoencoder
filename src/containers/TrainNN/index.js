@@ -1,13 +1,18 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { NNComponent } from 'components/NNComponent';
 import { NUM_MNIST_DATASET_ELEMENTS } from 'constants/data';
-import { createAutoencoder } from 'helpers/models';
-import { selectLayersOptions } from 'modules/layers/selectors';
-import { addModels, trainModel } from 'modules/models/actions';
+import { trainModel } from 'modules/models/actions';
 import { selectDataStatus } from 'modules/data/selectors';
 import { STATUS_LOADING } from 'constants/status';
 import { Loader } from 'components/common/Loader';
+import { stopTrainingCallback } from 'helpers/callbacks';
+import { selectIsTrainingStatus } from 'modules/models/selectors';
+import { useValidate } from 'helpers/validations';
+import { fetchData } from 'modules/data/actions';
+import { useHistory } from 'react-router-dom';
+import { TEST_NN_URL } from 'constants/api';
+import { validationRules } from './validationRules';
 
 const defaultSampleSizes = {
   train: 5500,
@@ -18,26 +23,26 @@ const defaultLearningOptions = {
   batchSize: 250,
   epochs: 50,
 };
-/**
- * TODO
- * два раза делается запрос картинок. нужно поправить
- */
+
 export const TrainNN = () => {
   const [sampleSizes, setSampleSizes] = useState(defaultSampleSizes);
   const [learningOptions, setLearningOptions] = useState(
     defaultLearningOptions
   );
-  const layersOptions = useSelector(selectLayersOptions);
+  const { errors, validateField, validateFields } = useValidate(
+    validationRules
+  );
+  const { updateState, stopTraining } = useMemo(
+    () => stopTrainingCallback(),
+    []
+  );
   const dispatch = useDispatch();
+  const history = useHistory();
   const dataStatus = useSelector(selectDataStatus);
-  const initImageContainer = useRef(null);
-  const predsImageContainer = useRef(null);
+  const isTraining = useSelector(selectIsTrainingStatus);
   useEffect(() => {
-    if (layersOptions.length) {
-      const models = createAutoencoder(layersOptions);
-      dispatch(addModels(models));
-    }
-  }, [layersOptions, dispatch]);
+    dispatch(fetchData());
+  }, [dispatch]);
   const editSampleSize = useCallback(
     ({ target }) => {
       const field = target.id || target.name;
@@ -54,9 +59,19 @@ export const TrainNN = () => {
     },
     [setLearningOptions]
   );
+  const handleClick = useCallback(() => {
+    updateState(true);
+  }, [updateState]);
   const trainNN = useCallback(() => {
-    dispatch(trainModel({ sampleSizes, learningOptions }));
-  }, [dispatch, sampleSizes, learningOptions]);
+    if (validateFields({ ...sampleSizes, ...learningOptions })) {
+      dispatch(trainModel({ sampleSizes, learningOptions, stopTraining }));
+    }
+  }, [dispatch, sampleSizes, learningOptions, stopTraining, validateFields]);
+  const goToTest = useCallback(() => {
+    history.push(TEST_NN_URL);
+  }, [history]);
+  const isLoading = dataStatus === STATUS_LOADING;
+
   return (
     <>
       <NNComponent
@@ -66,10 +81,13 @@ export const TrainNN = () => {
         learningOptions={learningOptions}
         editLearningOption={editLearningOption}
         trainNN={trainNN}
-        initImageContainer={initImageContainer}
-        predsImageContainer={predsImageContainer}
+        handleClick={handleClick}
+        isTraining={isTraining}
+        errors={errors}
+        validateField={validateField}
+        goToTest={goToTest}
       />
-      {dataStatus === STATUS_LOADING && <Loader />}
+      {isLoading && <Loader />}
     </>
   );
 };

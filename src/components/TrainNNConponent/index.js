@@ -7,7 +7,9 @@ import {
   Grid,
 } from '@material-ui/core';
 import { useStyles } from './styles';
-
+/**
+ * TODO добавить чекбокс для остановки при переобучении и чекбокс для рисовки графиков
+ */
 export const TrainNNComponent = ({
   testSampleSize = '',
   trainSampleSize = '',
@@ -17,7 +19,16 @@ export const TrainNNComponent = ({
   batchSize = '',
   epochs = '',
   trainNN,
+  handleClick,
+  isTraining,
+  errors,
+  validateField,
+  goToTest,
 }) => {
+  const handleClick1 = isTraining ? handleClick : trainNN;
+  const buttonText = isTraining
+    ? 'Остановить обучение'
+    : 'Обучить нейронную сеть';
   const styles = useStyles();
 
   return (
@@ -47,6 +58,10 @@ export const TrainNNComponent = ({
               value={testSampleSize}
               onChange={editSampleSize}
               fullWidth
+              disabled={isTraining}
+              error={!!errors.test}
+              helperText={errors.test}
+              onBlur={validateField}
             />
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -57,6 +72,10 @@ export const TrainNNComponent = ({
               value={trainSampleSize}
               onChange={editSampleSize}
               fullWidth
+              disabled={isTraining}
+              error={!!errors.train}
+              helperText={errors.train}
+              onBlur={validateField}
             />
           </Grid>
         </Grid>
@@ -74,6 +93,10 @@ export const TrainNNComponent = ({
               value={epochs}
               variant="outlined"
               fullWidth
+              disabled={isTraining}
+              error={!!errors.epochs}
+              helperText={errors.epochs}
+              onBlur={validateField}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
@@ -84,18 +107,34 @@ export const TrainNNComponent = ({
               variant="outlined"
               value={batchSize}
               fullWidth
+              disabled={isTraining}
+              error={!!errors.batchSize}
+              helperText={errors.batchSize}
+              onBlur={validateField}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4} container>
             <Button
               variant="contained"
-              color="primary"
+              color={isTraining ? 'secondary' : 'primary'}
               fullWidth
-              onClick={trainNN}
+              onClick={handleClick1}
             >
-              Обучить нейронную сеть
+              {buttonText}
             </Button>
           </Grid>
+          {!isTraining && (
+            <Grid item xs={12}>
+              <Button
+                variant="contained"
+                color="primary"
+                fullWidth
+                onClick={goToTest}
+              >
+                Перейти к тестированию нейронной сети
+              </Button>
+            </Grid>
+          )}
         </Grid>
       </Container>
     </>

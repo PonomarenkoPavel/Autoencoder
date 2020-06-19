@@ -1,11 +1,12 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { TRAIN_NN_URL, ROOT } from 'constants/api';
+import { TRAIN_NN_URL } from 'constants/api';
 import { CreateNNComponent } from 'components/CreateNNComponent';
 import { getEmptyLayerParameters } from 'helpers/layers';
 import { addLayersParameters } from 'modules/layers/actions';
 import { useValidate } from 'helpers/validations';
+import { createModels } from 'modules/models/actions';
 import { validationRules } from './validationRules';
 
 const defaultLayersNumber = 3;
@@ -24,8 +25,6 @@ const delaultLayers = {
   },
 };
 
-// const validationRules = {};
-
 export const CreateNN = () => {
   const history = useHistory();
   const dispatch = useDispatch();
@@ -38,12 +37,9 @@ export const CreateNN = () => {
 
   const goToTrain = useCallback(() => {
     dispatch(addLayersParameters(layers));
+    dispatch(createModels(layers));
     history.push(TRAIN_NN_URL);
   }, [history, dispatch, layers]);
-
-  const goBack = useCallback(() => {
-    history.push(ROOT);
-  }, [history]);
 
   const editLayersNumber = useCallback(
     ({ target }) => setLayersNumber(target.value),
@@ -52,12 +48,14 @@ export const CreateNN = () => {
 
   const setEmptyLayers = useCallback(() => {
     const layersObject = {};
-    for (let i = 0; i < layersNumber; i += 1) {
-      const layerId = i + 1;
-      layersObject[layerId] = getEmptyLayerParameters(layerId);
+    if (validateFields({ layersNumber })) {
+      for (let i = 0; i < layersNumber; i += 1) {
+        const layerId = i + 1;
+        layersObject[layerId] = getEmptyLayerParameters(layerId);
+      }
+      setLayers(layersObject);
     }
-    setLayers(layersObject);
-  }, [layersNumber, setLayers]);
+  }, [layersNumber, setLayers, validateFields]);
 
   const editTableRow = useCallback(
     ({ currentTarget, detail }) => {
@@ -65,11 +63,11 @@ export const CreateNN = () => {
         tagName,
         dataset: { id: layerId },
       } = currentTarget;
-      if (detail === 2 && tagName === 'TR') {
+      if (detail === 2 && tagName === 'TR' && !currentLayer) {
         setCurrentLayer(layerId);
       }
     },
-    [setCurrentLayer]
+    [setCurrentLayer, currentLayer]
   );
 
   const editLayerParam = useCallback(
@@ -107,7 +105,6 @@ export const CreateNN = () => {
   return (
     <CreateNNComponent
       goToTrain={goToTrain}
-      goBack={goBack}
       layers={layers}
       layersNumber={layersNumber}
       editLayersNumber={editLayersNumber}

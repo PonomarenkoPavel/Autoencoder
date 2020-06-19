@@ -1,1 +1,9 @@
 export const selectDataStatus = (state) => state.data.status;
+export const selectTrainImages = (state) => state.data.trainImages;
+export const selectTestImages = (state) => state.data.testImages;
+export const selectTestIndices = (state) => state.data.testIndices;
+export const selectTrainIndices = (state) => state.data.trainIndices;
+export const selectTestLabels = (state) => state.data.testLabels;
+export const selectTrainLabels = (state) => state.data.trainLabels;
+export const selectInitTestImageId = (state) => state.data.initTestImageId;
+export const selectInitTrainImageId = (state) => state.data.initTrainImageId;

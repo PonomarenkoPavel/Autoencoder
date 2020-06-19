@@ -10,10 +10,36 @@ import createSagaMiddleware from 'redux-saga';
 import { createStore, applyMiddleware } from 'redux';
 import * as serviceWorker from './serviceWorker';
 
+const actionSanitizer = (action) =>
+  action.type === 'data/FETCH_DATA_SUCCESS'
+    ? {
+        ...action,
+        payload: {
+          trainImages: 'ARRAY_OF_TRAIN_IMAGES_PIXELS',
+          testImages: 'ARRAY_OF_TEST_IMAGES_PIXELS',
+          testLabels: 'ARRAY_OF_TEST_LABELS',
+          trainLabels: 'ARRAY_OF_TRAIN_LABELS',
+        },
+      }
+    : action;
+
+const composeEnhancers = composeWithDevTools({
+  actionSanitizer,
+  stateSanitizer: (state) => ({
+    ...state,
+    data: {
+      ...state.data,
+      trainImages: 'ARRAY_OF_TRAIN_IMAGES_PIXELS',
+      testImages: 'ARRAY_OF_TEST_IMAGES_PIXELS',
+      testLabels: 'ARRAY_OF_TEST_LABELS',
+      trainLabels: 'ARRAY_OF_TRAIN_LABELS',
+    },
+  }),
+});
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(
   reducer,
-  composeWithDevTools(applyMiddleware(sagaMiddleware))
+  composeEnhancers(applyMiddleware(sagaMiddleware))
 );
 
 sagaMiddleware.run(rootSaga);

@@ -1,4 +1,4 @@
-import { MNIST_DATA_URL } from 'constants/api';
+import { MNIST_DATA_URL, MNIST_LABELS_URL } from 'constants/api';
 import {
   MNIST_IMAGE_SIZE,
   NUM_MNIST_DATASET_ELEMENTS,
@@ -59,6 +59,11 @@ export const fetchMNISTData = () => {
   });
 };
 
+export const fetchMNISTLabels = () =>
+  fetch(MNIST_LABELS_URL)
+    .then((response) => response.arrayBuffer())
+    .then((buffer) => new Uint8Array(buffer));
+
 /**
  * Create shuffled indices into the train/test set for when we select a
  * random dataset element for training / validation.
@@ -69,40 +74,58 @@ export const getIndices = () => {
   return { trainIndices, testIndices };
 };
 
+export const getTrainTestLabels = (labels) => {
+  const NUM_CLASSES = 10;
+  const lastTrainLableIndex = NUM_CLASSES * NUM_MNIST_TRAIN_ELEMENTS;
+  const trainLabels = labels.slice(0, lastTrainLableIndex);
+  const testLabels = labels.slice(lastTrainLableIndex);
+  return { trainLabels, testLabels };
+};
 /**
- * Slice the the images and labels into train and test sets.
+ * Slice the the images into train and test sets.
  */
-export const getTrainTestData = (data) => {
-  const trainImages = data.slice(
-    0,
-    MNIST_IMAGE_SIZE * NUM_MNIST_TRAIN_ELEMENTS
-  );
-  const testImages = data.slice(MNIST_IMAGE_SIZE * NUM_MNIST_TRAIN_ELEMENTS);
+export const getTrainTestImages = (data) => {
+  const lastTrainImageIndex = MNIST_IMAGE_SIZE * NUM_MNIST_TRAIN_ELEMENTS;
+  const trainImages = data.slice(0, lastTrainImageIndex);
+  const testImages = data.slice(lastTrainImageIndex);
   return { trainImages, testImages };
 };
 
 export const getDataBatch = ({
   batchSize,
-  testImages,
-  testIndices,
+  images,
+  indices,
   initIndex,
+  labels,
 }) => {
-  let shuffledTestIndex = initIndex;
+  if (Number.isNaN(Number(batchSize))) {
+    throw Error('Размер партии должен быть числом');
+  }
+  let index = initIndex;
   const dataBatch = tidy(() => {
-    const data = nextBatch(+batchSize, testImages, () => {
-      shuffledTestIndex = (shuffledTestIndex + 1) % testIndices.length;
-      return testIndices[shuffledTestIndex];
-    });
-    return data.reshape([+batchSize, 28, 28, 1]);
+    const { data, labels: selectedLabels } = nextBatch(
+      Number(batchSize),
+      [images, labels],
+      () => {
+        index = (index + 1) % indices.length;
+        return indices[index];
+      }
+    );
+    return {
+      data: data.reshape([Number(batchSize), 28, 28, 1]),
+      labels: selectedLabels,
+    };
   });
   return {
     batch: dataBatch,
-    shuffledTestIndex,
+    lastIndex: index,
   };
 };
 
-const nextBatch = (batchSize, data, getIndex) => {
+const nextBatch = (batchSize, [data, labels], getIndex) => {
+  const NUM_CLASSES = 10;
   const batchImagesArray = new Float32Array(batchSize * MNIST_IMAGE_SIZE);
+  const batchLabelsArray = new Uint8Array(batchSize * NUM_CLASSES);
 
   for (let i = 0; i < batchSize; i += 1) {
     const idx = getIndex();
@@ -110,7 +133,15 @@ const nextBatch = (batchSize, data, getIndex) => {
       idx * MNIST_IMAGE_SIZE,
       idx * MNIST_IMAGE_SIZE + MNIST_IMAGE_SIZE
     );
+    const label = labels.slice(
+      idx * NUM_CLASSES,
+      idx * NUM_CLASSES + NUM_CLASSES
+    );
+    batchLabelsArray.set(label, i * NUM_CLASSES);
     batchImagesArray.set(image, i * MNIST_IMAGE_SIZE);
   }
-  return tensor2d(batchImagesArray, [batchSize, MNIST_IMAGE_SIZE]);
+  return {
+    data: tensor2d(batchImagesArray, [batchSize, MNIST_IMAGE_SIZE]),
+    labels: tensor2d(batchLabelsArray, [batchSize, NUM_CLASSES]),
+  };
 };

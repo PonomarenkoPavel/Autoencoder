@@ -6,13 +6,19 @@ export const fetchData = () => ({
 });
 
 export const FETCH_DATA_SUCCESS = `${PREFIX}/FETCH_DATA_SUCCESS`;
-export const fetchDataSuccess = (data) => ({
+export const fetchDataSuccess = (payload) => ({
   type: FETCH_DATA_SUCCESS,
-  data,
+  payload,
 });
 
 export const SET_STATUS = `${PREFIX}/SET_STATUS`;
 export const setDataStatus = (status) => ({
   type: SET_STATUS,
   status,
+});
+
+export const EDIT_INIT_IMAGE_IDS = `${PREFIX}/EDIT_INIT_IMAGE_IDS`;
+export const editInitImageIds = (ids) => ({
+  type: EDIT_INIT_IMAGE_IDS,
+  ids,
 });

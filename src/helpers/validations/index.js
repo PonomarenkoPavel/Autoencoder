@@ -22,7 +22,6 @@ export const useValidate = (rules) => {
     const filed = target.id || target.name;
     const { value } = target;
     const filedRules = rules[filed];
-    console.log('filed', filed, 'rules', rules, 'value', value);
     if (Array.isArray(rules[filed])) {
       const fieldError =
         filedRules
@@ -36,10 +35,11 @@ export const useValidate = (rules) => {
     }
   };
   const validateFields = (values) => {
-    const fieldsError = Object.entries(rules).map(([field, fieldRules]) => {
+    const fieldsError = Object.entries(values).map(([field, value]) => {
+      const fieldRules = rules[field] || [];
       const fieldError =
         fieldRules
-          .map(({ rule, message }) => (rule(values[field]) ? '' : message))
+          .map(({ rule, message }) => (rule(value) ? '' : message))
           .filter((error) => !!error)[0] || '';
       return { [field]: fieldError };
     });

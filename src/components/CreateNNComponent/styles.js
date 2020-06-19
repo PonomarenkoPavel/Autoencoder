@@ -4,7 +4,6 @@ export const useStyles = makeStyles({
   wrapper: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'flex-start',
   },
   container: {
     paddingTop: '24px',
@@ -14,6 +13,7 @@ export const useStyles = makeStyles({
     marginBottom: '20px',
     display: 'flex',
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   table: {
     marginBottom: '20px',
@@ -24,21 +24,18 @@ export const useStyles = makeStyles({
       width: '20%',
     },
   },
-  edit: {
+  editedRow: {
     backgroundColor: 'rgba(0, 0, 0, 0.04)',
+    '& $padding': {
+      padding: '8px 16px 4px',
+    },
+    '& .MuiOutlinedInput-inputMarginDense': {
+      backgroundColor: '#fff',
+    },
   },
   yellowTableRow: {
     backgroundColor: '#fffcdd',
     fontStyle: 'italic',
   },
-  buttons: {
-    display: 'flex',
-    justifyContent: 'space-around',
-  },
-  padding: {
-    padding: '0 16px !important',
-  },
-  background: {
-    backgroundColor: '#fff',
-  },
+  padding: {},
 });

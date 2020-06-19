@@ -13,6 +13,7 @@ import {
 } from '@material-ui/core';
 import { SelectComponent } from 'components/common/Select';
 import { HeaderComponent } from 'components/common/Header';
+import { activationFunctions } from 'constants/layers';
 import { useStyles } from './styles';
 
 const CommentRow = React.memo(({ colSpan, children }) => {
@@ -30,20 +31,10 @@ const CommentRow = React.memo(({ colSpan, children }) => {
 const EditedRow = React.memo(
   ({ parameters, editLayerParam, validateField, errors }) => {
     const styles = useStyles();
-    const activationFunction = [
-      {
-        value: 'relu',
-        text: 'relu',
-      },
-      {
-        value: 'linear',
-        text: 'linear',
-      },
-    ];
 
     return (
       <>
-        <TableCell padding="none" className={styles.padding}>
+        <TableCell className={styles.padding}>
           <TextField
             label="Количество нейронов"
             variant="outlined"
@@ -59,27 +50,36 @@ const EditedRow = React.memo(
             helperText={errors.units}
           />
         </TableCell>
-        <TableCell padding="none" className={styles.padding}>
+        <TableCell className={styles.padding}>
           <SelectComponent
             label="Функция активации"
             name="act"
             id="act"
             labelId="activation-function"
-            values={activationFunction}
+            values={activationFunctions}
             value={parameters.act}
             onChange={editLayerParam}
             onBlur={validateField}
             size="small"
             fullWidth
-            className={styles.background}
-            // error={!!errors.act}
-            // helperText={errors.act}
+            error={!!errors.act}
+            helperText={errors.act}
           />
         </TableCell>
       </>
     );
   }
 );
+
+const SimpleTableHead = React.memo(() => (
+  <TableHead>
+    <TableRow>
+      <TableCell>Номер слоя</TableCell>
+      <TableCell>Количество нейронов</TableCell>
+      <TableCell>Фунция активации</TableCell>
+    </TableRow>
+  </TableHead>
+));
 
 const SimpleTableRow = React.memo(
   ({
@@ -100,7 +100,7 @@ const SimpleTableRow = React.memo(
         onClick={editTableRow}
         onBlur={onBlur}
         data-id={layerId}
-        className={currentLayer === layerId ? styles.edit : ''}
+        className={currentLayer === layerId ? styles.editedRow : ''}
         tabIndex="0"
       >
         <TableCell scope="row">{layerId}</TableCell>
@@ -125,7 +125,9 @@ const SimpleTableRow = React.memo(
     );
   }
 );
-
+/**
+ * TODO добавить выбор bias и разреженность
+ */
 export const CreateNNComponent = React.memo(
   ({
     goToTrain,
@@ -136,23 +138,26 @@ export const CreateNNComponent = React.memo(
     currentLayer,
     editLayerParam,
     onBlur,
-    goBack,
     editTableRow,
     errors,
     validateField,
   }) => {
     const styles = useStyles();
-    console.log('errors', errors);
+
     return (
-      <div className={styles.wrapper}>
+      <>
         <HeaderComponent text="Настройка слоев нейронной сети" />
         <Container maxWidth="md" className={styles.container}>
           <form noValidate autoComplete="off" className={styles.form}>
             <TextField
+              id="layersNumber"
               label="Количество слоев"
               variant="outlined"
-              defaultValue={layersNumber}
-              onBlur={editLayersNumber}
+              value={layersNumber}
+              onChange={editLayersNumber}
+              onBlur={validateField}
+              error={!!errors.layersNumber}
+              helperText={errors.layersNumber}
               size="small"
             />
             <Button
@@ -165,13 +170,7 @@ export const CreateNNComponent = React.memo(
           </form>
           <TableContainer className={styles.table}>
             <Table aria-label="layers">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Номер слоя</TableCell>
-                  <TableCell>Количество нейронов</TableCell>
-                  <TableCell>Фунция активации</TableCell>
-                </TableRow>
-              </TableHead>
+              <SimpleTableHead />
               <TableBody>
                 <CommentRow colSpan={3}>
                   Для изменения параметров слоя два раза нажмите на него
@@ -192,16 +191,11 @@ export const CreateNNComponent = React.memo(
               </TableBody>
             </Table>
           </TableContainer>
-          <div className={styles.buttons}>
-            <Button variant="contained" color="secondary" onClick={goBack}>
-              На главную
-            </Button>
-            <Button variant="contained" color="primary" onClick={goToTrain}>
-              Создать нейронную сеть
-            </Button>
-          </div>
+          <Button variant="contained" color="primary" onClick={goToTrain}>
+            Создать нейронную сеть
+          </Button>
         </Container>
-      </div>
+      </>
     );
   }
 );
